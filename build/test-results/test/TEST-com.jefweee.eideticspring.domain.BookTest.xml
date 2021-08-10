@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.jefweee.eideticspring.domain.BookTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-08-10T16:59:06" hostname="jenwallace.local" time="0.024">
+<testsuite name="com.jefweee.eideticspring.domain.BookTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-08-10T17:20:09" hostname="jenwallace.local" time="0.025">
   <properties/>
-  <testcase name="testFullSizedImageUrlConstructed()" classname="com.jefweee.eideticspring.domain.BookTest" time="0.024"/>
+  <testcase name="testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlBlank()" classname="com.jefweee.eideticspring.domain.BookTest" time="0.009"/>
+  <testcase name="testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlNull()" classname="com.jefweee.eideticspring.domain.BookTest" time="0.0"/>
+  <testcase name="testFullSizedImageUrlConstructedFromThumbnailImageUrl()" classname="com.jefweee.eideticspring.domain.BookTest" time="0.015"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

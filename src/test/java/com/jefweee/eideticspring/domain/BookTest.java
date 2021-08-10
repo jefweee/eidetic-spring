@@ -8,7 +8,29 @@ import static org.hamcrest.Matchers.is;
 public class BookTest {
 
     @Test
-    public void testFullSizedImageUrlConstructed(){
+    public void testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlNull(){
+        String thumbnailLink = null;
+        String expectedFullSizeLink = "";
+
+        Book book = new Book();
+        book.setThumbnailLink(thumbnailLink);
+
+        assertThat(book.generateFullSizeCoverImageLink(), is(expectedFullSizeLink));
+    }
+
+    @Test
+    public void testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlBlank(){
+        String thumbnailLink = "";
+        String expectedFullSizeLink = "";
+
+        Book book = new Book();
+        book.setThumbnailLink(thumbnailLink);
+
+        assertThat(book.generateFullSizeCoverImageLink(), is(expectedFullSizeLink));
+    }
+
+    @Test
+    public void testFullSizedImageUrlConstructedFromThumbnailImageUrl(){
         String thumbnailLink = "https://books.google.com/books/content?id=WkC9DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api";
         String expectedFullSizeLink = "https://books.google.com/books/content?id=WkC9DwAAQBAJ&printsec=frontcover&img=1&edge=curl&source=gbs_api&zoom=0";
 
