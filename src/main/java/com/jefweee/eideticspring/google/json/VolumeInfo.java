@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,8 +14,10 @@ import lombok.NoArgsConstructor;
 public class VolumeInfo {
 
     String title;
-    String[] authors;
+    List<String> authors;
     String publisher;
     String description;
     ImageLinks imageLinks;
+    List<String> categories;
+
 }

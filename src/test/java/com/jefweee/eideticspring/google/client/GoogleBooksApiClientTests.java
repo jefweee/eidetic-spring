@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -97,10 +97,36 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canFetchOneBookWithSingleWordSearchTerm(){
-        int maxResults = 2;
+    public void canFetchOneFictionBook(){
+        int maxResults = 1;
+
+        GoogleBookResponse response = googleBooksApiClient.getFictionBooks(maxResults);
+
+        assertThat(response.getItems().size(), is(1));
+         for(GoogleBook book : response.getItems()){
+             assertTrue(book.getVolumeInfo().getCategories().stream().anyMatch(a -> a.toLowerCase().contains("fiction")));
+         }
+    }
+
+    @Test
+    public void canFetchOneBookWithAuthorSearchTerm(){
+        int maxResults = 1;
         String printType = "books";
-        String searchTerm = "flowers";
+        String searchTerm = "inauthor:Jennifer";
+
+        GoogleBookResponse response = googleBooksApiClient.getBooks(searchTerm, printType, maxResults);
+
+        assertThat(response.getItems().size(), is(1));
+        for(GoogleBook book : response.getItems()){
+            assertTrue(book.getVolumeInfo().getAuthors().stream().anyMatch(a -> a.toLowerCase().contains("jennifer")));
+        }
+    }
+
+    @Test
+    public void canFetchOneBookWithSingleWordSearchTerm(){
+        int maxResults = 1;
+        String printType = "books";
+        String searchTerm = "fiction";
 
         GoogleBookResponse response = googleBooksApiClient.getBooks(searchTerm, printType, maxResults);
 
@@ -111,7 +137,7 @@ public class GoogleBooksApiClientTests {
     public void canFetchMultipleBooksWithSingleWordSearchTerm(){
         int maxResults = 3;
         String printType = "books";
-        String searchTerm = "flowers";
+        String searchTerm = "fiction";
 
         GoogleBookResponse response = googleBooksApiClient.getBooks(searchTerm, printType, maxResults);
 

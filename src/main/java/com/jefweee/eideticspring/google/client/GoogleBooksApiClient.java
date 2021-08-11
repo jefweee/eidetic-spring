@@ -6,6 +6,8 @@ import com.jefweee.eideticspring.google.json.GoogleBookResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static reactor.core.publisher.Mono.just;
+
 @Service
 @Validated
 public class GoogleBooksApiClient {
@@ -30,9 +34,7 @@ public class GoogleBooksApiClient {
     @Value("${google.books.api.baseurl}")
     private String googleBookApiBaseUrl;
 
-    public GoogleBooksApiClient() {
-
-    }
+    public GoogleBooksApiClient() { }
 
     public String getGoogleBookApiKey() {
         return googleBookApiKey;
@@ -42,9 +44,14 @@ public class GoogleBooksApiClient {
         return googleBookApiBaseUrl;
     }
 
-    public GoogleBookResponse getBooks(@NotNull @NotBlank String searchTerm, @NotNull @NotBlank String printType, @Min(1) int maxResults) {
+    public GoogleBookResponse getFictionBooks(int maxResults) {
+        String fictionOnlyQuery = "subject:fiction";
+        String booksOnlyPrintType = "books";
+        return getBooks(fictionOnlyQuery, booksOnlyPrintType, maxResults);
+    }
 
-        Mono<GoogleBookResponse> response = getWebClient().get()
+    public GoogleBookResponse getBooks(@NotNull @NotBlank String searchTerm, @NotNull @NotBlank String printType, @Min(1) int maxResults) {
+        ResponseEntity<GoogleBookResponse> response = getWebClient().get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/volumes")
                         .queryParam("q", searchTerm)
@@ -53,9 +60,10 @@ public class GoogleBooksApiClient {
                         .queryParam("key", googleBookApiKey)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<GoogleBookResponse>() {});
+                .toEntity(GoogleBookResponse.class)
+                .block();
 
-        return response.block();
+        return response.getBody();
     }
 
     private WebClient getWebClient(){
