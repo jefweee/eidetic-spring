@@ -22,7 +22,7 @@ public class BookRepositoryTest {
     MongoTemplate testMongoTemplate;
 
     @Test
-    public void testCanSuccessfullyStoreAndRetrieveMultipleBooks() {
+    public void canSuccessfullyStoreAndRetrieveMultipleBooks() {
 
         Book book1 = new Book();
         book1.setId(1L);

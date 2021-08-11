@@ -27,13 +27,13 @@ public class GoogleBooksApiClientTests {
     GoogleBooksApiClient googleBooksApiClient;
 
     @Test
-    public void testApiClientPropertiesConfiguredCorrectly(){
+    public void apiClientPropertiesConfiguredCorrectly(){
         assertThat(googleBooksApiClient.getGoogleBookApiKey(), is(notNullValue()));
         assertThat(googleBooksApiClient.getGoogleBookApiBaseUrl(), is("https://www.googleapis.com/books/v1"));
     }
 
     @Test
-    public void testCantFetchBooksWithNegativeResultLimit(){
+    public void cantFetchBooksWithNegativeResultLimit(){
         int maxResults = -1;
         String printType = "books";
         String searchTerm = "flowers";
@@ -49,7 +49,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void testCantFetchBooksWithZeroResultLimit(){
+    public void cantFetchBooksWithZeroResultLimit(){
         int maxResults = 0;
         String printType = "books";
         String searchTerm = "flowers";
@@ -65,7 +65,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void testCantFetchBooksWithoutSearchTerm(){
+    public void cantFetchBooksWithoutSearchTerm(){
         int maxResults = 1;
         String printType = "books";
         String searchTerm = "";
@@ -81,7 +81,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void testCantFetchBooksWithoutPrintType(){
+    public void cantFetchBooksWithoutPrintType(){
         int maxResults = 0;
         String printType = "";
         String searchTerm = "flowers";
@@ -97,13 +97,24 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void testCanFetchOneBook(){
-        int maxResults = 1;
+    public void canFetchOneBookWithSingleWordSearchTerm(){
+        int maxResults = 2;
         String printType = "books";
         String searchTerm = "flowers";
 
         GoogleBookResponse response = googleBooksApiClient.getBooks(searchTerm, printType, maxResults);
 
         assertThat(response.getItems().size(), is(1));
+    }
+
+    @Test
+    public void canFetchMultipleBooksWithSingleWordSearchTerm(){
+        int maxResults = 3;
+        String printType = "books";
+        String searchTerm = "flowers";
+
+        GoogleBookResponse response = googleBooksApiClient.getBooks(searchTerm, printType, maxResults);
+
+        assertThat(response.getItems().size(), is(3));
     }
 }

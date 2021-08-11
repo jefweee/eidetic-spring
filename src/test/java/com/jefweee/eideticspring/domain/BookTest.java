@@ -11,7 +11,7 @@ public class BookTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void testNoFullSizedImageUrlConstructedWhenThumbnailUrlEmpty(String thumbnailLink){
+    public void noFullSizedImageUrlConstructedWhenThumbnailUrlEmpty(String thumbnailLink){
 
         String expectedFullSizeLink = "";
 
@@ -22,7 +22,7 @@ public class BookTest {
     }
 
     @Test
-    public void testFullSizedImageUrlConstructedFromThumbnailImageUrl(){
+    public void fullSizedImageUrlConstructedFromThumbnailImageUrl(){
         String thumbnailLink = "https://books.google.com/books/content?id=WkC9DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api";
         String expectedFullSizeLink = "https://books.google.com/books/content?id=WkC9DwAAQBAJ&printsec=frontcover&img=1&edge=curl&source=gbs_api&zoom=0";
 
