@@ -28,4 +28,4 @@ build/
 # IntelliJ Files
 .gradle/
 .idea/
-.DS_STORE/
+.DS_STORE
