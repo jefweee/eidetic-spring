@@ -1,26 +1,18 @@
 package com.jefweee.eideticspring.domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class BookTest {
 
-    @Test
-    public void testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlNull(){
-        String thumbnailLink = null;
-        String expectedFullSizeLink = "";
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testNoFullSizedImageUrlConstructedWhenThumbnailUrlEmpty(String thumbnailLink){
 
-        Book book = new Book();
-        book.setThumbnailLink(thumbnailLink);
-
-        assertThat(book.generateFullSizeCoverImageLink(), is(expectedFullSizeLink));
-    }
-
-    @Test
-    public void testNoFullSizedImageUrlConstructedWhenThumbnailImageUrlBlank(){
-        String thumbnailLink = "";
         String expectedFullSizeLink = "";
 
         Book book = new Book();

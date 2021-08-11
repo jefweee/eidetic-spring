@@ -3,7 +3,8 @@ package com.jefweee.eideticspring.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.util.MultiValueMap;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Data
@@ -11,14 +12,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 @AllArgsConstructor
 public class Book {
 
+    @Transient
     private final String ZOOM_PARAMETER_NAME = "zoom";
+    @Transient
     private final String ZOOM_PARAMETER_VALUE_FULL_SIZE = "0";
 
-    String title;
-    String[] authors;
-    String description;
-    String thumbnailLink;
+    @Id
+    private Long id;
 
+    private String title;
+    private String[] authors;
+    private String description;
+    private String thumbnailLink;
 
     public String generateFullSizeCoverImageLink() {
         String fullSizeLink = "";
