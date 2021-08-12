@@ -1,5 +1,6 @@
-package com.jefweee.eideticspring.domain;
+package com.jefweee.eideticspring.unit.domain;
 
+import com.jefweee.eideticspring.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;

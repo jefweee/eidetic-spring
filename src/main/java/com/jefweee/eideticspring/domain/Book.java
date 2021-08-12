@@ -24,6 +24,7 @@ public class Book {
     private String[] authors;
     private String description;
     private String thumbnailLink;
+    private String[] categories;
 
     public String generateFullSizeCoverImageLink() {
         String fullSizeLink = "";
