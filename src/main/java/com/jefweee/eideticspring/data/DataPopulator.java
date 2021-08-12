@@ -1,17 +1,35 @@
 package com.jefweee.eideticspring.data;
 
+import com.jefweee.eideticspring.domain.Book;
+import com.jefweee.eideticspring.domain.BookRepository;
 import com.jefweee.eideticspring.googleclient.GoogleBooksApiClient;
+import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DataPopulator {
 
-    @Autowired
+
     GoogleBooksApiClient googleBooksApiClient;
+    BookRepository bookRepository;
+
+    @Autowired
+    public DataPopulator(GoogleBooksApiClient googleBooksApiClient, BookRepository bookRepository) {
+        this.googleBooksApiClient = googleBooksApiClient;
+        this.bookRepository = bookRepository;
+    }
 
     public void populateBooksFromGoogle(int booksToPopulate) {
 
-        googleBooksApiClient.getFictionBooksFromGoogle(booksToPopulate);
+        GoogleBookResponse responseFromGoogle = googleBooksApiClient.getFictionBooksFromGoogle(booksToPopulate);
+        List<Book> books = responseFromGoogle.getItems().stream().map(x -> x.getVolumeInfo().convertToBook()).collect(Collectors.toList());
+        for(Book b : books){
+            bookRepository.save(b);
+        }
+        bookRepository.findAll();
     }
 }

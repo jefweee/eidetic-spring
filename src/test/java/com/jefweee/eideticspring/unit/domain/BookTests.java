@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BookTest {
+public class BookTests {
 
     @ParameterizedTest
     @NullAndEmptySource

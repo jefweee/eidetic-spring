@@ -19,12 +19,12 @@ public class BookRepositoryTests extends MongoDbIntegrationTest {
     public void canSuccessfullyStoreAndRetrieveMultipleBooks() {
 
         Book book1 = new Book();
-        book1.setId(1L);
+        book1.setId("1");
         book1.setTitle("Fried Green Tomatoes at the Whistlestop Cafe");
         repo.save(book1);
 
         Book book2 = new Book();
-        book2.setId(2L);
+        book2.setId("2");
         book2.setTitle("The Invisible Library");
         repo.save(book2);
 
