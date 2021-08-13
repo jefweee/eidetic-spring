@@ -1,5 +1,6 @@
 package com.jefweee.eideticspring.integration.googleclient;
 
+import com.jefweee.eideticspring.domain.Book;
 import com.jefweee.eideticspring.googleclient.json.GoogleBook;
 import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import com.jefweee.eideticspring.googleclient.IGoogleBooksApiClient;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -35,27 +38,20 @@ public class GoogleBooksApiClientTests {
 
     @ParameterizedTest
     @ValueSource(ints = {-10, -1, 0})
-    public void cantFetchBooksWithResultLimitZeroOrLower(int maxResults){
-
+    public void cantFetchBooksWithResultLimitZeroOrLower(int numBooksToFetch){
         Exception exception = assertThrows(ConstraintViolationException.class, () -> {
-                    googleBooksApiClient.getFictionBooksFromGoogle(maxResults);
+                    googleBooksApiClient.getFictionBooksFromGoogle(numBooksToFetch);
                 }
         );
-
         String actualExceptionMessage = exception.getMessage();
-
-        assertTrue(actualExceptionMessage.contains("maxResults: must be greater than or equal to 1"));
+        assertTrue(actualExceptionMessage.contains("numBooksToFetch: must be greater than or equal to 1"));
     }
 
-    @Test
-    public void canFetchOneFictionBook(){
-        int maxResults = 1;
-
-        GoogleBookResponse response = googleBooksApiClient.getFictionBooksFromGoogle(maxResults);
-
-        assertThat(response.getItems().size(), is(1));
-         for(GoogleBook book : response.getItems()){
-             assertTrue(book.getVolumeInfo().getCategories().stream().anyMatch(a -> a.toLowerCase().contains("fiction")));
-         }
+    @ParameterizedTest
+    @ValueSource(ints = {1, 10, 20, 23, 26})
+    public void cantFetchMultipleBooks(int numBooksToFetch){
+        List<GoogleBook> booksFromGoogle = googleBooksApiClient.getFictionBooksFromGoogle(numBooksToFetch);
+        assertThat(booksFromGoogle.size(), is(numBooksToFetch));
     }
+
 }
