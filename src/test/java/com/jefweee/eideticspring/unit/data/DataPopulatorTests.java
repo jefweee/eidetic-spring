@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DataPopulatorTest extends MongoDbIntegrationTest {
+public class DataPopulatorTests extends MongoDbIntegrationTest {
 
     @Autowired
     BookRepository bookRepository;
