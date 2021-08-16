@@ -1,6 +1,5 @@
 package com.jefweee.eideticspring.googleclient.adapter;
 
-import com.jefweee.eideticspring.googleclient.exceptions.NoVolumesFoundException;
 import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import javax.validation.Valid;
 public class GoogleBooksApiAdapter implements IGoogleBooksApiAdapter {
 
     @Override
-    public GoogleBookResponse fetchVolumes(@Valid GoogleBooksApiParameters apiCallParameters){
+    public ResponseEntity<GoogleBookResponse> fetchVolumes(@Valid GoogleBooksApiParameters apiCallParameters){
         ResponseEntity<GoogleBookResponse> response = getWebClient(apiCallParameters.getGoogleBookApiBaseUrl()).get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/volumes")
@@ -29,7 +28,7 @@ public class GoogleBooksApiAdapter implements IGoogleBooksApiAdapter {
                 .toEntity(GoogleBookResponse.class)
                 .block();
 
-        return response.getBody();
+        return response;
     }
 
     private WebClient getWebClient(String baseUrl){

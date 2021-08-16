@@ -4,9 +4,12 @@ import com.jefweee.eideticspring.domain.Book;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiAdapter;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiParameters;
 import com.jefweee.eideticspring.googleclient.json.GoogleBook;
+import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class GoogleBooksApiClient implements IGoogleBooksApiClient {
 
+    public static final int DEFAULT_BATCH_SIZE = 10;
+    public static final String BOOKS_ONLY_PRINT_TYPE = "books";
     GoogleBooksApiAdapter googleBooksApiAdapter;
     String googleBookApiKey;
     String googleBookApiBaseUrl;
@@ -36,7 +41,7 @@ public class GoogleBooksApiClient implements IGoogleBooksApiClient {
     @Override
     public List<Book> getFictionBooks(int numBooksToFetch) {
         String fictionOnlyQuery = "subject:fiction";
-        List<GoogleBook> googleBooks = getBooks(fictionOnlyQuery, numBooksToFetch);
+        List<GoogleBook> googleBooks = getBooksInBatches(fictionOnlyQuery, numBooksToFetch);
         List<Book> books = googleBooks
                                     .stream()
                                     .map(b -> b.getVolumeInfo().convertToBook())
@@ -44,18 +49,37 @@ public class GoogleBooksApiClient implements IGoogleBooksApiClient {
         return books;
     }
 
-    private List<GoogleBook> getBooks(@NotBlank @NotEmpty String searchTerm, @Min(0) int numBooksToFetch) {
-        String booksOnlyPrintType = "books";
+    private List<GoogleBook> getBooksInBatches(@NotBlank @NotEmpty String searchTerm, @Min(1) int numBooksToFetch) {
 
         List<GoogleBook> books = new ArrayList<>();
-        int defaultBookBatchSize = 10;
-        int currentBookBatchSize = Math.min(defaultBookBatchSize, numBooksToFetch-books.size());
+        int batchSize = Math.min(DEFAULT_BATCH_SIZE, numBooksToFetch);
+        int numBatchesRequired = Math.floorDiv(numBooksToFetch, batchSize);
+        int remainderBooksAfterBatches = Math.floorMod(numBooksToFetch, batchSize);
 
-        while(books.size() < numBooksToFetch){
+        for(int batch = 1; batch <= numBatchesRequired; batch++){
             GoogleBooksApiParameters searchParameters = new GoogleBooksApiParameters(googleBookApiKey, googleBookApiBaseUrl, searchTerm,
-                    booksOnlyPrintType, currentBookBatchSize, books.size());
-            books.addAll(googleBooksApiAdapter.fetchVolumes(searchParameters).getItems());
-            currentBookBatchSize = Math.min(defaultBookBatchSize, numBooksToFetch-books.size());
+                    BOOKS_ONLY_PRINT_TYPE, batchSize, books.size());
+
+            books.addAll(getABatchOfBooks(searchParameters));
+        }
+
+        if(remainderBooksAfterBatches > 0){
+            GoogleBooksApiParameters searchParameters = new GoogleBooksApiParameters(googleBookApiKey, googleBookApiBaseUrl, searchTerm,
+                    BOOKS_ONLY_PRINT_TYPE, remainderBooksAfterBatches, books.size());
+            books.addAll(getABatchOfBooks(searchParameters));
+        }
+        return books;
+    }
+
+    private List<GoogleBook> getABatchOfBooks(GoogleBooksApiParameters searchParameters){
+        List<GoogleBook> books = new ArrayList<>();
+        ResponseEntity<GoogleBookResponse> fullResponse = googleBooksApiAdapter.fetchVolumes(searchParameters);
+
+        if(fullResponse.getStatusCode().is2xxSuccessful()){
+            GoogleBookResponse bookResponse = fullResponse.getBody();
+            if(!CollectionUtils.isEmpty(bookResponse.getItems())){
+                books = bookResponse.getItems();
+            }
         }
 
         return books;
@@ -70,10 +94,5 @@ public class GoogleBooksApiClient implements IGoogleBooksApiClient {
     public String getGoogleBookApiBaseUrl() {
         return googleBookApiBaseUrl;
     }
-
-
-
-
-
 
 }

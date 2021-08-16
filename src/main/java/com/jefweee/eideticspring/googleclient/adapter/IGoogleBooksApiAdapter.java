@@ -1,8 +1,9 @@
 package com.jefweee.eideticspring.googleclient.adapter;
 
 import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface IGoogleBooksApiAdapter {
 
-    GoogleBookResponse fetchVolumes(GoogleBooksApiParameters apiCallParameters);
+    ResponseEntity<GoogleBookResponse> fetchVolumes(GoogleBooksApiParameters apiCallParameters);
 }

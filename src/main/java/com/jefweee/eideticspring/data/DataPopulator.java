@@ -24,6 +24,6 @@ public class DataPopulator {
 
     public void populateBooksFromGoogle(int booksToPopulate) {
         List<Book> books = googleBooksApiClient.getFictionBooks(booksToPopulate);
-        books.stream().map(b -> bookRepository.save(b));
+        books.stream().forEach(b -> bookRepository.save(b));
     }
 }

@@ -1,4 +1,4 @@
-package com.jefweee.eideticspring.unit.data;
+package com.jefweee.eideticspring.integration.data;
 
 import com.jefweee.eideticspring.MongoDbIntegrationTest;
 import com.jefweee.eideticspring.data.DataPopulator;
