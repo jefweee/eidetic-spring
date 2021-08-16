@@ -23,8 +23,7 @@ public class DataPopulator {
     }
 
     public void populateBooksFromGoogle(int booksToPopulate) {
-        List<GoogleBook> responseFromGoogle = googleBooksApiClient.getFictionBooksFromGoogle(booksToPopulate);
-        List<Book> books = responseFromGoogle.stream().map(x -> x.getVolumeInfo().convertToBook()).collect(Collectors.toList());
+        List<Book> books = googleBooksApiClient.getFictionBooks(booksToPopulate);
         books.stream().map(b -> bookRepository.save(b));
     }
 }

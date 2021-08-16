@@ -24,7 +24,13 @@ public class VolumeInfoSerializer extends StdSerializer<VolumeInfo> {
             jsonGenerator.writeObjectField("categories", value.getCategories());
             jsonGenerator.writeObjectField("authors", value.getAuthors());
             jsonGenerator.writeObjectField("description", value.getDescription());
-            jsonGenerator.writeStringField("thumbnailLink", value.getImageLinks().getThumbnail());
+
+            String thumbnailLink = null;
+            if (value.getImageLinks() != null){
+                thumbnailLink = value.getImageLinks().getThumbnail();
+            };
+            jsonGenerator.writeStringField("thumbnailLink", thumbnailLink);
+
             jsonGenerator.writeEndObject();
     }
 }

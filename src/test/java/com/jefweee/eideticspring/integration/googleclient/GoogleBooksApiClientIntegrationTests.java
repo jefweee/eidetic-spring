@@ -1,8 +1,6 @@
 package com.jefweee.eideticspring.integration.googleclient;
 
 import com.jefweee.eideticspring.domain.Book;
-import com.jefweee.eideticspring.googleclient.json.GoogleBook;
-import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import com.jefweee.eideticspring.googleclient.IGoogleBooksApiClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class GoogleBooksApiClientTests {
+public class GoogleBooksApiClientIntegrationTests {
 
-    Logger logger = LoggerFactory.getLogger(GoogleBooksApiClientTests.class);
+    Logger logger = LoggerFactory.getLogger(GoogleBooksApiClientIntegrationTests.class);
 
     @Autowired
     IGoogleBooksApiClient googleBooksApiClient;
@@ -40,17 +38,18 @@ public class GoogleBooksApiClientTests {
     @ValueSource(ints = {-10, -1, 0})
     public void cantFetchBooksWithResultLimitZeroOrLower(int numBooksToFetch){
         Exception exception = assertThrows(ConstraintViolationException.class, () -> {
-                    googleBooksApiClient.getFictionBooksFromGoogle(numBooksToFetch);
+                    googleBooksApiClient.getFictionBooks(numBooksToFetch);
                 }
         );
         String actualExceptionMessage = exception.getMessage();
+        System.out.println(actualExceptionMessage);
         assertTrue(actualExceptionMessage.contains("numBooksToFetch: must be greater than or equal to 1"));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 20, 23, 26})
-    public void cantFetchMultipleBooks(int numBooksToFetch){
-        List<GoogleBook> booksFromGoogle = googleBooksApiClient.getFictionBooksFromGoogle(numBooksToFetch);
+    public void canFetchMultipleBooksWithPositiveLimit(int numBooksToFetch){
+        List<Book> booksFromGoogle = googleBooksApiClient.getFictionBooks(numBooksToFetch);
         assertThat(booksFromGoogle.size(), is(numBooksToFetch));
     }
 
