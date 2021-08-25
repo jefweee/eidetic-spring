@@ -5,6 +5,8 @@ services:
     image: mongo:latest
     container_name: eidetic-mongo-server
     restart: always
+    ports:
+      - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: "$MONGO_EIDETIC_ROOT_USERNAME" # Get from Host Environment Var
       MONGO_INITDB_ROOT_PASSWORD: "$MONGO_EIDETIC_ROOT_PASSWORD" # Get from Host Environment Var
