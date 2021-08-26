@@ -73,5 +73,18 @@ task integrationTest(type: Test) {
 	}
 }
 
-// Task - Run Both Unit then Integration Tests
-task allTest(dependsOn: ['test', 'integrationTest'])
+// Task - Run End To End Tests Only
+task endToEndTest(type: Test) {
+	useJUnitPlatform()
+
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+
+	filter {
+		includeTestsMatching "com.jefweee.eideticspring.e2e.*"
+	}
+}
+
+// Task - Run Unit then Integration then E2E tests
+task allTest(dependsOn: ['test', 'integrationTest', 'endToEndTest'])

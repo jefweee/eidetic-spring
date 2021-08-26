@@ -16,6 +16,6 @@ public class DataPopulatorStateMonitor {
 
     public String getCurrentDataStatus(){
         long numBooksInRepo = bookRepo.count();
-        return "There are " + numBooksInRepo + " books in our storage";
+        return "There are currently " + numBooksInRepo + " books in our storage";
     }
 }

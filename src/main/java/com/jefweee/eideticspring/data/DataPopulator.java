@@ -3,12 +3,10 @@ package com.jefweee.eideticspring.data;
 import com.jefweee.eideticspring.domain.Book;
 import com.jefweee.eideticspring.domain.BookRepository;
 import com.jefweee.eideticspring.googleclient.GoogleBooksApiClient;
-import com.jefweee.eideticspring.googleclient.json.GoogleBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DataPopulator {
@@ -26,4 +24,5 @@ public class DataPopulator {
         List<Book> books = googleBooksApiClient.getFictionBooks(booksToPopulate);
         books.stream().forEach(b -> bookRepository.save(b));
     }
+
 }
