@@ -3,6 +3,7 @@ package com.jefweee.eideticspring.googleclient;
 import com.jefweee.eideticspring.domain.Book;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiAdapter;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiParameters;
+import com.jefweee.eideticspring.googleclient.exception.FailedToFetchBooksFromGoogleException;
 import com.jefweee.eideticspring.googleclient.json.GoogleBook;
 import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +40,20 @@ public class GoogleBooksApiClient implements IGoogleBooksApiClient {
     }
 
     @Override
-    public List<Book> getFictionBooks(int numBooksToFetch) {
+    public List<Book> getFictionBooks(int numBooksToFetch) throws FailedToFetchBooksFromGoogleException {
         String fictionOnlyQuery = "subject:fiction";
-        List<GoogleBook> googleBooks = getBooksInBatches(fictionOnlyQuery, numBooksToFetch);
-        List<Book> books = googleBooks
-                                    .stream()
-                                    .map(b -> b.getVolumeInfo().convertToBook())
-                                    .collect(Collectors.toList());
+        List<Book> books = new ArrayList<>();
+
+        try {
+            List<GoogleBook> googleBooks = getBooksInBatches(fictionOnlyQuery, numBooksToFetch);
+            books = googleBooks
+                    .stream()
+                    .map(b -> b.getVolumeInfo().convertToBook())
+                    .collect(Collectors.toList());
+        }
+        catch(Exception e){
+            throw new FailedToFetchBooksFromGoogleException();
+        }
         return books;
     }
 

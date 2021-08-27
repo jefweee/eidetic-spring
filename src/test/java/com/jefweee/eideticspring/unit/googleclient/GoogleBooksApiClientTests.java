@@ -1,6 +1,7 @@
 package com.jefweee.eideticspring.unit.googleclient;
 
 import com.jefweee.eideticspring.domain.Book;
+import com.jefweee.eideticspring.googleclient.exception.FailedToFetchBooksFromGoogleException;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiAdapter;
 import com.jefweee.eideticspring.googleclient.GoogleBooksApiClient;
 import com.jefweee.eideticspring.googleclient.adapter.GoogleBooksApiParameters;
@@ -19,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -36,14 +36,12 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class GoogleBooksApiClientTests {
 
-    Logger logger = LoggerFactory.getLogger(GoogleBooksApiClientTests.class);
-
     @Mock
     GoogleBooksApiAdapter mockGoogleBooksApiAdapter;
 
     @ParameterizedTest
     @ValueSource(ints = {1, 9, 10})
-    public void canFetchMultipleBooksInOneBatch(int numBooksToFetch){
+    public void canFetchMultipleBooksInOneBatch(int numBooksToFetch) throws FailedToFetchBooksFromGoogleException {
 
         GoogleBookResponse mockGoogleBookResponse = new GoogleBookResponse();
         mockGoogleBookResponse.setItems(generateGoogleBooks(numBooksToFetch));
@@ -60,7 +58,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canFetchMultipleBooksInMultipleBatchesWithNoRemainder(){
+    public void canFetchMultipleBooksInMultipleBatchesWithNoRemainder() throws FailedToFetchBooksFromGoogleException {
 
         int numBooksToFetch = 20;
 
@@ -86,7 +84,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canFetchMultipleBooksInSingleBatchWithRemainder(){
+    public void canFetchMultipleBooksInSingleBatchWithRemainder() throws FailedToFetchBooksFromGoogleException {
 
         int numBooksToFetch = 11;
 
@@ -111,7 +109,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canFetchMultipleBooksInMultipleBatchesWithRemainder(){
+    public void canFetchMultipleBooksInMultipleBatchesWithRemainder() throws FailedToFetchBooksFromGoogleException {
 
         int numBooksToFetch = 21;
 
@@ -140,7 +138,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canHandleNoBooksFoundByApi(){
+    public void canHandleNoBooksFoundByApi() throws FailedToFetchBooksFromGoogleException {
         int numBooksToFetch = 1;
         GoogleBookResponse mockGoogleBookResponse = new GoogleBookResponse();
         mockGoogleBookResponse.setItems(null);
@@ -158,7 +156,7 @@ public class GoogleBooksApiClientTests {
     }
 
     @Test
-    public void canHandleErrorFromApi(){
+    public void canHandleErrorFromApi() throws FailedToFetchBooksFromGoogleException {
         int numBooksToFetch = 1;
         GoogleBookResponse mockGoogleBookResponse = new GoogleBookResponse();
         mockGoogleBookResponse.setItems(null);

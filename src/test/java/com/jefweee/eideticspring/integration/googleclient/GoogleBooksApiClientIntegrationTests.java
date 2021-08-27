@@ -1,7 +1,11 @@
 package com.jefweee.eideticspring.integration.googleclient;
 
 import com.jefweee.eideticspring.domain.Book;
+import com.jefweee.eideticspring.domain.BookRepository;
+import com.jefweee.eideticspring.googleclient.exception.FailedToFetchBooksFromGoogleException;
 import com.jefweee.eideticspring.googleclient.IGoogleBooksApiClient;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -48,7 +52,7 @@ public class GoogleBooksApiClientIntegrationTests {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 20, 23, 26})
-    public void canFetchMultipleBooksWithPositiveLimit(int numBooksToFetch){
+    public void canFetchMultipleBooksWithPositiveLimit(int numBooksToFetch) throws FailedToFetchBooksFromGoogleException {
         List<Book> booksFromGoogle = googleBooksApiClient.getFictionBooks(numBooksToFetch);
         assertThat(booksFromGoogle.size(), is(numBooksToFetch));
     }

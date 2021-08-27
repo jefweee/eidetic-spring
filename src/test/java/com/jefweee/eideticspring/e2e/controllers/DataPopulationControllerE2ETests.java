@@ -2,9 +2,6 @@ package com.jefweee.eideticspring.e2e.controllers;
 
 import com.jefweee.eideticspring.domain.Book;
 import com.jefweee.eideticspring.domain.BookRepository;
-import com.jefweee.eideticspring.googleclient.json.GoogleBookResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,11 +48,22 @@ public class DataPopulationControllerE2ETests {
 
     @Test
     public void populateShouldAdd5BooksToDatabaseAndReturnOkStatus() throws Exception {
-        ResponseEntity<Object> addBooksResponse = this.restTemplate.getForEntity("http://localhost:" + port + "/datapopulator/populate/5", Object.class);
+        int numberOfBooksToStore = 5;
+        ResponseEntity<Object> addBooksResponse = this.restTemplate.getForEntity("http://localhost:" + port + "/datapopulator/populatebooks/" + numberOfBooksToStore, Object.class);
         List<Book> booksInStorage = bookRepository.findAll();
 
         assertThat(addBooksResponse.getStatusCode().is2xxSuccessful());
         assertThat(addBooksResponse.getBody().toString().contains("5 books have been added to our storage"));
-        assertThat(booksInStorage).hasSize(5);
+        assertThat(booksInStorage).hasSize(numberOfBooksToStore);
+    }
+
+    @Test
+    public void populateWithInvalidParameterShouldReturnNotOKStatus() throws Exception {
+        String invalidNumberOfBooksToStore = "potato";
+        ResponseEntity<Object> addBooksResponse = this.restTemplate.getForEntity("http://localhost:" + port + "/datapopulator/populatebooks/" + invalidNumberOfBooksToStore, Object.class);
+        List<Book> booksInStorage = bookRepository.findAll();
+
+        assertThat(addBooksResponse.getStatusCode().is4xxClientError());
+        assertThat(addBooksResponse.getBody().toString().contains("Number of books to fetch must be an integer"));
     }
 }

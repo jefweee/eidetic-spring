@@ -12,23 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BookRepositoryIntegrationTests extends MongoDbIntegrationTest {
 
-    @Autowired
-    BookRepository repo;
-
     @Test
     public void canSuccessfullyStoreAndRetrieveMultipleBooks() {
 
         Book book1 = new Book();
         book1.setId("1");
         book1.setTitle("Fried Green Tomatoes at the Whistlestop Cafe");
-        repo.save(book1);
+        getBookRepository().save(book1);
 
         Book book2 = new Book();
         book2.setId("2");
         book2.setTitle("The Invisible Library");
-        repo.save(book2);
+        getBookRepository().save(book2);
 
-        List<Book> result = repo.findAll();
+        List<Book> result = getBookRepository().findAll();
         assertTrue(result.size() == 2);
         assertTrue(result.stream()
               .allMatch(
